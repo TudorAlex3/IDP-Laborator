@@ -1,0 +1,25 @@
+# Laboratoare IDP - Instrumente pentru Dezvoltarea Programelor
+
+Acest repository contine laboratoarele practice pentru cursul IDP (Instrumente pentru Dezvoltarea Programelor).
+
+## Laboratoare
+
+| Lab | Tema | Concepte cheie |
+|-----|------|---------------|
+| [Lab1](Lab1/) | Bazele Docker | Imagini, containere, Dockerfile, networking, volume |
+| [Lab2](Lab2/) | Docker Compose & Swarm | Aplicatii multi-serviciu, clustering, scalare, secrets |
+| [Lab3](Lab3/) | API Gateway & Monitorizare | Kong, Prometheus, Grafana, persistenta NFS |
+
+## Structura
+
+Fiecare director de laborator contine:
+- **`cheatsheet.md`** — ghid pas-cu-pas cu comenzi si explicatii
+- Codul sursa si fisierele de configurare necesare
+- Scripturi de cleanup unde e cazul
+
+## Cerinte
+
+- [Docker](https://docs.docker.com/get-docker/) instalat si functional
+- [Docker Compose](https://docs.docker.com/compose/install/) (inclus in Docker Desktop)
+- Cunostinte de baza de terminal/CLI
+- `curl` pentru testarea API-urilor

@@ -1,0 +1,34 @@
+_format_version: "2.1"
+
+services:
+  - name: books-service
+    url: http://api
+    routes:
+      - name: books-service-route
+        paths:
+          - /api/books
+        strip_path: false
+
+  - name: db-adminer
+    url: http://adminer:8080
+    routes:
+      - name: adminer-service
+        paths:
+          - /adminer
+
+consumers:
+  - username: lab-student
+
+plugins:
+  - name: key-auth
+    service: books-service
+    config:
+      hide_credentials: true
+  - name: prometheus
+    config:
+      per_consumer: true
+      status_code_metrics: true
+
+keyauth_credentials:
+  - consumer: lab-student
+    key: mobylab

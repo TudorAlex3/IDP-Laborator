@@ -1,0 +1,45 @@
+_format_version: "2.1"
+
+services:
+  - name: books-service
+    url: http://api/api
+    routes:
+      - name: books-service-route
+        paths:
+          - /api/books
+
+  - name: db-adminer
+    url: http://adminer:8080
+    routes:
+      - name: adminer-service
+        paths:
+          - /adminer
+
+consumers:
+  - username: lab-student
+
+plugins:
+  - name: rate-limiting
+    config:
+      minute: 10
+      limit_by: ip
+      policy: local
+
+  - name: cors
+    service: books-service
+    config:
+      origins:
+        - "*"
+
+  - name: bot-detection
+
+  - name: prometheus
+
+  - name: jwt
+    service: books-service
+
+jwt_secrets:
+  - consumer: lab-student
+    key: Moby Labs IDP
+    algorithm: HS256
+    secret: mobylab

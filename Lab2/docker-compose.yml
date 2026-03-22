@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+    api:
+        build: ./api
+        environment:
+            PGUSER: admin
+            PGPASSWORD_FILE: /run/secrets/db-password
+            PGDATABASE: books
+            PGHOST: postgres
+            PGPORT: 5432
+        ports:
+            - "5000:80"
+        networks:
+            - app-network
+        depends_on:
+            - postgres
+        secrets:
+            - db-password
+
+    postgres:
+        image: postgres:12
+        environment:
+            POSTGRES_USER: admin
+            POSTGRES_PASSWORD_FILE: /run/secrets/db-password
+            POSTGRES_DB: books
+        volumes:
+            - db-data:/var/lib/postgresql/data
+            - ./init-scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+        networks:
+            - app-network
+        secrets:
+            - db-password
+
+volumes:
+    db-data:
+
+networks:
+    app-network:
+
+secrets:
+    db-password:
+        file: './db-secret.txt'
