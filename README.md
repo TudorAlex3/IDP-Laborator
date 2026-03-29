@@ -9,6 +9,7 @@ Acest repository contine laboratoarele practice pentru cursul IDP (Instrumente p
 | [Lab1](Lab1/) | Bazele Docker | Imagini, containere, Dockerfile, networking, volume |
 | [Lab2](Lab2/) | Docker Compose & Swarm | Aplicatii multi-serviciu, clustering, scalare, secrets |
 | [Lab3](Lab3/) | API Gateway & Monitorizare | Kong, Prometheus, Grafana, persistenta NFS |
+| [Lab4](Lab4/) | Portainer & GitLab CI/CD | Gestiune vizuala cluster, webhook-uri, pipeline-uri, runners |
 
 ## Structura
 

@@ -1,0 +1,32 @@
+# Example .gitlab-ci.yml for a microservice
+# Place this file in the root of each microservice repository
+
+stages:
+    - build
+    - deploy
+
+# Build stage: build Docker image and push to registry
+docker-build:
+    stage: build
+    before_script:
+        - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    script:
+        - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+        - docker push "$CI_REGISTRY_IMAGE"
+    only:
+        - master
+    tags:
+        - idp
+        - lab4
+
+# Deploy stage: trigger Portainer webhook to redeploy the service
+deploy-service:
+    stage: deploy
+    script:
+        - apk add --update curl
+        - curl -XPOST http://<PORTAINER_IP>:9000/api/webhooks/<WEBHOOK_ID>
+    only:
+        - master
+    tags:
+        - idp
+        - lab4
