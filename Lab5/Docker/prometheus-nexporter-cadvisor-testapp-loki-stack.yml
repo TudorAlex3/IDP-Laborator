@@ -1,0 +1,94 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    configs:
+      - source: prometheus_config_v5
+        target: /etc/prometheus/prometheus.yml
+    networks:
+      - monitoring-net
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - monitoring-net
+    deploy:
+      mode: global
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - monitoring-net
+    deploy:
+      mode: global
+
+  testapp:
+    image: mobylab/idp-laborator4-testapp
+    ports:
+      - "8000:8000"
+      - "5000:5000"
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
+    networks:
+      - monitoring-net
+    deploy:
+      replicas: 1
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    configs:
+      - source: loki_config
+        target: /etc/loki/local-config.yaml
+    networks:
+      - monitoring-net
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring-net
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+
+configs:
+  prometheus_config_v5:
+    file: ../Configs/prometheus-nexporter-cadvisor-testapp.yml
+  loki_config:
+    file: ../Configs/loki/loki.yml
+
+networks:
+  monitoring-net:
+    driver: overlay
+    attachable: true
